@@ -1,4 +1,4 @@
-import { readJSONSync, readText, deepMerge } from "../lib/merge.js";
+import { readJSONSync, readText, deepMerge, parseLocalName, mergeMarkdownByHeading } from "../lib/merge.js";
 
 // Use a non-existent path for ENOENT tests
 const MISSING = "/tmp/claudes-test-nonexistent-" + Date.now();
@@ -93,6 +93,70 @@ export default {
 					name: "Empty target returns source",
 					args: [{}, { a: 1 }],
 					expect: { a: 1 },
+				},
+			],
+		},
+		{
+			name: "parseLocalName() base",
+			run: (arg) => parseLocalName(arg)?.base,
+			tests: [
+				{ arg: "settings.local.json", expect: "settings.json" },
+				{ arg: "settings.local.deep.json", expect: "settings.json" },
+				{ arg: "CLAUDE.local.md", expect: "CLAUDE.md" },
+				{ arg: "CLAUDE.local.deep.md", expect: "CLAUDE.md" },
+				{ arg: ".claude.local.json", expect: ".claude.json" },
+				{ arg: "custom-config.local.deep.json", expect: "custom-config.json" },
+				{ arg: "settings.json", expect: undefined },
+				{ arg: "README.md", expect: undefined },
+			],
+		},
+		{
+			name: "parseLocalName() depth",
+			run: (arg) => parseLocalName(arg)?.depth,
+			tests: [
+				{ arg: "settings.local.json", expect: "shallow" },
+				{ arg: "settings.local.deep.json", expect: "deep" },
+				{ arg: "CLAUDE.local.md", expect: "shallow" },
+				{ arg: "CLAUDE.local.deep.md", expect: "deep" },
+			],
+		},
+		{
+			name: "mergeMarkdownByHeading()",
+			run: mergeMarkdownByHeading,
+			tests: [
+				{
+					name: "Local overrides matching heading",
+					args: [
+						"# Title\n\nIntro\n\n## Section A\n\nBase A\n\n## Section B\n\nBase B\n",
+						"## Section A\n\nOverridden A\n",
+					],
+					expect: "# Title\n\nIntro\n\n## Section A\n\nOverridden A\n\n## Section B\n\nBase B\n",
+				},
+				{
+					name: "New heading is appended",
+					args: [
+						"## Existing\n\nContent\n",
+						"## New\n\nNew content\n",
+					],
+					expect: "## Existing\n\nContent\n\n## New\n\nNew content\n",
+				},
+				{
+					name: "Empty base returns local",
+					args: ["", "## Hello\n\nWorld\n"],
+					expect: "## Hello\n\nWorld\n",
+				},
+				{
+					name: "Empty local returns base",
+					args: ["## Hello\n\nWorld\n", ""],
+					expect: "## Hello\n\nWorld\n",
+				},
+				{
+					name: "Preamble overridden by local preamble",
+					args: [
+						"Base preamble\n\n## A\n\nContent\n",
+						"Local preamble\n",
+					],
+					expect: "Local preamble\n\n## A\n\nContent\n",
 				},
 			],
 		},

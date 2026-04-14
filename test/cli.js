@@ -26,9 +26,9 @@ export default {
 	run: (arg) => run(Array.isArray(arg) ? arg : [arg]),
 	tests: [
 		{
-			name: "No args shows help",
+			name: "No args runs list",
 			arg: [],
-			check: (r) => r.exitCode === 0 && r.stderr.includes("Commands:"),
+			check: (r) => (r.stdout + r.stderr).includes("Select a profile"),
 			expect: true,
 		},
 		{

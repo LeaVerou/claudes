@@ -27,12 +27,12 @@ claudes use sandbox
 # Creates ~/.claude-sandbox/ and sets CLAUDE_CONFIG_DIR
 ```
 
-### `claudes list` (alias: `ls`)
+### `claudes` / `claudes list` (alias: `ls`)
 
-List all profiles with an interactive selector. The active profile is marked with `●`.
+List all profiles with an interactive selector. The active profile is marked with `●`. Running `claudes` with no arguments is equivalent to `claudes list`.
 
 ```bash
-claudes list
+claudes
 ```
 
 ### `claudes rm <name>` (alias: `remove`)
@@ -51,9 +51,44 @@ Print the active profile name, or `default` if none is active.
 
 Switch back to the default Claude Code configuration (unsets `CLAUDE_CONFIG_DIR`).
 
+### `claudes -x <name>`
+
+Shorthand for `claudes use <name>` that also launches Claude after switching.
+
+```bash
+claudes -x sandbox
+# Equivalent to: claudes use sandbox && claude
+```
+
+If the profile has a `claudes.json` with `flags`, those are passed to Claude automatically.
+
+### `claudes help` / `claudes --help`
+
+Show available commands and options.
+
 ### `claudes shell-init`
 
 Output the shell wrapper function. Not called directly — used in your shell rc file.
+
+## Options
+
+| Flag | Description |
+|---|---|
+| `--help` | Show help message |
+| `--dry-run` | Show what would happen without making changes |
+| `-x` | Also launch Claude after switching (use only) |
+
+## Profile configuration (`claudes.json`)
+
+A profile can include a `claudes.json` file for claudes-specific settings:
+
+```json
+{
+  "flags": "--plugin-dir ./my-plugins --verbose"
+}
+```
+
+The `flags` field (string or array) is passed to Claude on every launch. When you `use` a profile with flags, a shell alias is created so that running `claude` directly also picks them up.
 
 ## Profile-local files
 

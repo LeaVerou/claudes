@@ -26,14 +26,13 @@ if (flags.exec.value && command && !commands.has(command)) {
 	command = "use";
 }
 
-// --help or `help` command
-if (flags.help.value || command === "help" || !command) {
-	printHelp(commands);
+// No args → list
+if (!command) {
+	command = "list";
+}
 
-	if (command && command !== "help" && !commands.has(command)) {
-		log(`\nUnknown command: ${ command }`);
-		process.exitCode = 1;
-	}
+if (flags.help.value || command === "help") {
+	printHelp(commands);
 }
 else {
 	try {

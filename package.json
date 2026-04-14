@@ -1,0 +1,32 @@
+{
+  "name": "claudes",
+  "version": "0.1.0",
+  "description": "Manage Claude Code configuration profiles",
+  "type": "module",
+  "bin": {
+    "claudes": "./bin/claudes.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "profile",
+    "cli"
+  ],
+  "author": "Lea Verou",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md"
+  ],
+  "dependencies": {
+    "@inquirer/confirm": "^6.0.11",
+    "@inquirer/select": "^5.1.3"
+  },
+  "devDependencies": {
+    "htest.dev": "^0.0.24"
+  }
+}

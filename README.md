@@ -1,7 +1,11 @@
 # claudes
 
 Manage [Claude Code](https://docs.anthropic.com/en/docs/claude-code) configuration profiles.
-Each profile is an isolated config directory (`~/.claude-<name>/`) with its own `settings.json`, `CLAUDE.md`, `.claude.json`, plugins, agents, and commands.
+Each profile is an isolated config directory (`~/.claude-<name>/`).
+
+Profiles can have their own entirely separate `settings.json`, `CLAUDE.md`, `.claude.json`, plugins, agents, and commands.
+Alternatively, they can define incremental modifications over the default profile's settings.
+
 
 ## Install
 
@@ -53,17 +57,19 @@ Output the shell wrapper function. Not called directly — used in your shell rc
 
 ## Profile-local files
 
-You can place `.local` files in a profile directory to override settings from `~/.claude/`:
+You can place `.local` and `.local.deep` files in a profile directory to override settings from `~/.claude/`:
 
 | Profile file | Merged with | Strategy |
 |---|---|---|
-| `settings.local.json` | `~/.claude/settings.json` | Shallow `Object.assign()` |
-| `.claude.local.json` | `~/.claude/.claude.json` | Shallow `Object.assign()` |
+| `settings.local.json` | `~/.claude/settings.json` | Shallow — top-level keys replaced |
+| `settings.local.deep.json` | `~/.claude/settings.json` | Deep — nested objects merged recursively |
+| `.claude.local.json` | `~/.claude/.claude.json` | Shallow |
+| `.claude.local.deep.json` | `~/.claude/.claude.json` | Deep |
 | `CLAUDE.local.md` | `~/.claude/CLAUDE.md` | Appended after a blank line |
 
 Merging happens every time you `use` a profile. The merged result is written to the profile directory as the non-`.local` filename (e.g. `settings.json`), so Claude Code picks it up directly.
 
-**Note:** JSON merging is shallow — top-level keys in the `.local` file replace the corresponding keys from the base file entirely.
+If both `.local` and `.local.deep` exist for the same base file, `.local.deep` is applied first, then `.local` on top. This lets you deep-merge most settings while still replacing specific top-level keys.
 
 ## How it works
 

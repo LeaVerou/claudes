@@ -53,7 +53,7 @@ export default {
 					},
 					check: (shell) =>
 						shell[0]?.startsWith("export CLAUDE_CONFIG_DIR=") &&
-						shell[1] === "claude",
+						shell.at(-1) === "claude",
 					expect: true,
 				},
 				{

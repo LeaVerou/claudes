@@ -66,10 +66,6 @@ If the profile has a `claudes.json` with `flags`, those are passed to Claude aut
 
 Show available commands and options.
 
-### `claudes shell-init`
-
-Output the shell wrapper function. Not called directly — used in your shell rc file.
-
 ## Options
 
 | Flag | Description |
@@ -92,23 +88,22 @@ The `flags` field (string or array) is passed to Claude on every launch. When yo
 
 ## Profile-local files
 
-You can place `.local` and `.local.deep` files in a profile directory to override settings from `~/.claude/`:
+Any file in a profile directory matching these suffixes is merged with the corresponding base file from `~/.claude/`:
 
-| Profile file | Merged with | Strategy |
+| Suffix | Type | Strategy |
 |---|---|---|
-| `settings.local.json` | `~/.claude/settings.json` | Shallow — top-level keys replaced |
-| `settings.local.deep.json` | `~/.claude/settings.json` | Deep — nested objects merged recursively |
-| `.claude.local.json` | `~/.claude/.claude.json` | Shallow |
-| `.claude.local.deep.json` | `~/.claude/.claude.json` | Deep |
-| `CLAUDE.local.md` | `~/.claude/CLAUDE.md` | Appended after a blank line |
+| `*.local.json` | JSON | Shallow — top-level keys replaced |
+| `*.local.deep.json` | JSON | Deep — nested objects merged recursively |
+| `*.local.md` | Markdown | Appended after a blank line |
+| `*.local.deep.md` | Markdown | Sections with the same heading are replaced, new headings appended |
 
-Merging happens every time you `use` a profile. The merged result is written to the profile directory as the non-`.local` filename (e.g. `settings.json`), so Claude Code picks it up directly.
+For example, `settings.local.json` merges with `~/.claude/settings.json`, `CLAUDE.local.deep.md` merges with `~/.claude/CLAUDE.md`, etc.
 
-If both `.local` and `.local.deep` exist for the same base file, `.local.deep` is applied first, then `.local` on top. This lets you deep-merge most settings while still replacing specific top-level keys.
+Merging happens every time you `use` a profile. The merged result is written to the profile directory without the `.local` suffix (e.g. `settings.json`), so Claude Code picks it up directly.
+
+If both `.local` and `.local.deep` exist for the same base file, `.local.deep` is applied first, then `.local` on top.
 
 ## How it works
 
 Claude Code respects the `CLAUDE_CONFIG_DIR` environment variable to redirect its config storage.
 Profiles are stored as `~/.claude-<name>/` directories, discovered by globbing `~/.claude-*`.
-
-Since a child process (Node.js) can't set environment variables in the parent shell, the `shell-init` wrapper function captures the script's stdout (which contains `export`/`unset` commands) and `eval`s it in the current shell. All user-facing messages go to stderr.

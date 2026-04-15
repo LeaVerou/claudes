@@ -28,8 +28,10 @@ export default {
 		{
 			name: "No args runs list",
 			arg: [],
-			// spawnSync has no TTY, so list renders non-interactively
-			check: (r) => r.exitCode === 0 && r.stderr.includes("default"),
+			// spawnSync has no TTY, so list renders non-interactively.
+			// "● default" proves both the list ran and the active-profile
+			// marker is placed next to the right profile.
+			check: (r) => r.exitCode === 0 && r.stderr.includes("● default"),
 			expect: true,
 		},
 		{

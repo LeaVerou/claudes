@@ -22,6 +22,10 @@
     "lib/",
     "README.md"
   ],
+  "scripts": {
+    "test": "htest test",
+    "release": "npm login && npx release-it"
+  },
   "dependencies": {
     "@inquirer/confirm": "^6.0.11",
     "@inquirer/select": "^5.1.3"

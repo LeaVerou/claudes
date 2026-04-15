@@ -27,8 +27,19 @@ export default {
 	tests: [
 		{
 			name: "No args runs list",
-			arg: [],
-			check: (r) => (r.stdout + r.stderr).includes("Select a profile"),
+			run: () => {
+				const a = run([]);
+				const b = run(["list"]);
+				return a.stdout === b.stdout && a.exitCode === b.exitCode;
+			},
+			expect: true,
+		},
+		{
+			name: "list outputs profile names to stdout",
+			arg: "list",
+			// Plain names, one per line, no marker. Asserting "default"
+			// appears as its own line also catches any prefix decoration.
+			check: (r) => r.exitCode === 0 && r.stdout.trim().split("\n").includes("default"),
 			expect: true,
 		},
 		{

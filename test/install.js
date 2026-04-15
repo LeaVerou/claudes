@@ -21,15 +21,14 @@ export default {
 	tests: [
 		{
 			name: "hasShellInit()",
-			run: hasShellInit,
 			tests: [
 				{
-					name: "Returns false for missing file",
-					arg: path.join(TMP, "nonexistent"),
+					name: "Missing file",
+					run: () => hasShellInit(path.join(TMP, "nonexistent")),
 					expect: false,
 				},
 				{
-					name: "Returns false for file without line",
+					name: "File without line",
 					run: () => hasShellInit(tmpFile("empty.sh", "# my config\n")),
 					expect: false,
 				},

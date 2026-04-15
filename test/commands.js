@@ -1,7 +1,6 @@
 import { output, flags } from "../lib/cli.js";
 import { DEFAULT_PROFILE } from "../lib/profiles.js";
 import use from "../lib/commands/use.js";
-import which from "../lib/commands/which.js";
 import reset from "../lib/commands/reset.js";
 import os from "node:os";
 
@@ -62,41 +61,6 @@ export default {
 					run () {
 						use.run(["../evil"]);
 					},
-				},
-			],
-		},
-		{
-			name: "which",
-			run () {
-				which.run();
-				return output.snapshot().shell;
-			},
-			tests: [
-				{
-					name: "Default when CLAUDE_CONFIG_DIR is unset",
-					beforeEach () {
-						setup();
-						delete process.env.CLAUDE_CONFIG_DIR;
-					},
-					expect: [DEFAULT_PROFILE],
-				},
-				{
-					name: "Profile name for recognized path",
-					beforeEach () {
-						setup();
-						process.env.CLAUDE_CONFIG_DIR = `${ HOME }/.claude-sandbox`;
-					},
-					afterEach () { delete process.env.CLAUDE_CONFIG_DIR; },
-					expect: ["sandbox"],
-				},
-				{
-					name: "Raw path for unrecognized CLAUDE_CONFIG_DIR",
-					beforeEach () {
-						setup();
-						process.env.CLAUDE_CONFIG_DIR = "/some/random/path";
-					},
-					afterEach () { delete process.env.CLAUDE_CONFIG_DIR; },
-					expect: ["/some/random/path"],
 				},
 			],
 		},

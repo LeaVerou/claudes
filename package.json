@@ -1,6 +1,6 @@
 {
   "name": "claudes",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Manage Claude Code configuration profiles",
   "type": "module",
   "bin": {
